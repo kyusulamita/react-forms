@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 
 export default class NewPlaylist extends React.Component {
 
@@ -13,7 +14,14 @@ export default class NewPlaylist extends React.Component {
   }
   handleOnSubmit(event){
     event.preventDefault()
-    console.log(this.state.value)
+    const newPlayList = {
+      name: this.state.value
+    }
+    axios.post('/api/playlists',newPlayList)
+    .then(res => res.data)
+    .then(result => {
+      console.log(result)
+    })
     this.setState({value: ''})
   }
 

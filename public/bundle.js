@@ -13230,6 +13230,10 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _axios = __webpack_require__(31);
+
+var _axios2 = _interopRequireDefault(_axios);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -13259,7 +13263,14 @@ var NewPlaylist = function (_React$Component) {
     key: 'handleOnSubmit',
     value: function handleOnSubmit(event) {
       event.preventDefault();
-      console.log(this.state.value);
+      var newPlayList = {
+        name: this.state.value
+      };
+      _axios2.default.post('/api/playlists', newPlayList).then(function (res) {
+        return res.data;
+      }).then(function (result) {
+        console.log(result);
+      });
       this.setState({ value: '' });
     }
   }, {
@@ -13455,6 +13466,29 @@ var Sidebar = function Sidebar(props) {
           { className: 'btn btn-primary btn-block', to: '/newplaylist' },
           _react2.default.createElement('span', { className: 'glyphicon glyphicon-plus' }),
           ' PLAYLIST'
+        )
+      ),
+      _react2.default.createElement('hr', null),
+      _react2.default.createElement(
+        'ul',
+        { className: 'list-unstyled' },
+        _react2.default.createElement(
+          'li',
+          { className: 'playlist-item menu-item' },
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: 'FILL_ME_IN' },
+            'some playlist'
+          )
+        ),
+        _react2.default.createElement(
+          'li',
+          { className: 'playlist-item menu-item' },
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: 'WHERE_TO_GO' },
+            'another playlist'
+          )
         )
       )
     )
