@@ -17,12 +17,8 @@ export default class NewPlaylist extends React.Component {
     const newPlayList = {
       name: this.state.value
     }
-    axios.post('/api/playlists',newPlayList)
-    .then(res => res.data)
-    .then(result => {
-      console.log(result)
-    })
-    this.setState({value: ''})
+    this.props.addPlaylist(newPlayList);
+    this.setState({value: ''});
   }
 
   handleChange(event) {

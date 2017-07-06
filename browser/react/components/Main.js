@@ -7,15 +7,39 @@ import SingleArtist from './SingleArtist';
 import Sidebar from './Sidebar';
 import Player from './Player';
 import NewPlaylist from './NewPlaylist';
+import axios from 'axios'
 
 export default class Main extends Component {
+  constructor (){
+    super()
+    this.state = {
+      playlists: []
+    }
+    this.addPlaylist = this.addPlaylist.bind(this)
+  }
+   componentDidMount(){
+     axios.get('/api/playlists')
+     .then(res => res.data)
+     .then((playlists) =>{
+       this.setState({playlists})
+     })
+   }
 
+   addPlaylist(newPlayList){
+     axios.post('/api/playlists',newPlayList)
+     .then(res => res.data)
+     .then(result => {
+       this.setState((prevState) => {
+         return {playlist : prevState.playlists.concat(result)}
+       })
+     })
+   }
   render () {
     return (
       <Router>
         <div id="main" className="container-fluid">
           <div className="col-xs-2">
-            <Sidebar />
+            <Sidebar playlists={this.state.playlists}/>
           </div>
           <div className="col-xs-10">
             <Switch>
@@ -23,7 +47,7 @@ export default class Main extends Component {
               <Route path="/albums/:albumId" component={SingleAlbum} />
               <Route exact path="/artists" component={AllArtists} />
               <Route path="/artists/:artistId" component={SingleArtist} />
-              <Route exact path="/newplaylist" component={NewPlaylist} />
+              <Route exact path="/newplaylist" render={() => (<NewPlaylist addPlaylist={this.addPlaylist}/>)} />
               <Route component={StatefulAlbums} />
 
             </Switch>
