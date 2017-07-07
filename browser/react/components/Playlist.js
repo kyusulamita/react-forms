@@ -8,9 +8,11 @@ export default class Playlist extends React.Component {
     super()
     this.state = {
       playlist: {},
-      songs: []
+      songs: [],
+      error: false
     }
     this.addSongToPlaylist = this.addSongToPlaylist.bind(this)
+    this.removeSong = this.removeSong.bind(this)
   }
 
   loadPlaylist(playlistId){
@@ -42,11 +44,28 @@ export default class Playlist extends React.Component {
           this.setState((prevState)=>{
               return {playlist:  Object.assign({},prevState.playlist,{
                 songs: [...prevState.playlist.songs,songAdded]
-              })}
+              }),
+                error: false}
           })
+      })
+      .catch(error => {
+        this.setState({error: true})
       })
   }
 
+  removeSong(songId){
+    axios.delete(`/api/playlists/${this.state.playlist.id}/songs`,{id: songId})
+      .then((res)=>{
+        this.setState((prevState)=>{
+          let newPlaylist = Object.assign({}, prevState.newPlaylist);
+          newPlaylist.songs = newPlaylist.songs.filter(song => song.id !== songId)
+          return {playlist : newPlaylist}
+        })
+      })
+      .catch(error => {
+        this.setState({error: true})
+      })
+  }
   allSongList(){
     axios.get('/api/songs')
     .then(res => res.data)
@@ -59,10 +78,11 @@ export default class Playlist extends React.Component {
   render(){
     return <div>
       <h3>{ this.state.playlist.name }</h3>
-      <Songs songs={this.state.playlist.songs} /> {/** Hooray for reusability! */}
+      <Songs songs={this.state.playlist.songs} removeSong={this.removeSong} /> {/** Hooray for reusability! */}
       { this.state.playlist.songs && !this.state.playlist.songs.length && <small>No songs.</small> }
       <hr />
-      <AddSongContainer songs={this.state.songs} addSongToPlaylist={this.addSongToPlaylist}/>
+      { this.state.error && <div className="alert alert-warning">This is an invalid input</div> }
+      <AddSongContainer songs={this.state.songs} addSongToPlaylist={this.addSongToPlaylist} />
     </div>
   }
 }

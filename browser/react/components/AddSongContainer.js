@@ -21,6 +21,8 @@ export default class AddSongContainer extends React.Component {
 		event.preventDefault()
 		this.props.addSongToPlaylist(this.state.songId)
 	}
+
+
   render(){
     return (
       <div>
