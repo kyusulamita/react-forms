@@ -1,13 +1,16 @@
 import React from 'react'
 import axios from 'axios'
 import Songs from './Songs'
+import AddSongContainer from './AddSongContainer'
 
 export default class Playlist extends React.Component {
   constructor(){
     super()
     this.state = {
-      playlist: {}
+      playlist: {},
+      songs: []
     }
+    this.addSongToPlaylist = this.addSongToPlaylist.bind(this)
   }
 
   loadPlaylist(playlistId){
@@ -21,6 +24,7 @@ export default class Playlist extends React.Component {
   componentDidMount(){
     const playlistId = this.props.match.params.playlistId
     this.loadPlaylist(playlistId)
+    this.allSongList()
   }
 
   componentWillReceiveProps(nextProps){
@@ -31,6 +35,26 @@ export default class Playlist extends React.Component {
     }
   }
 
+  addSongToPlaylist(songId){
+    axios.post(`/api/playlists/${this.state.playlist.id}/songs`,{id: songId})
+      .then(res => res.data)
+      .then((songAdded)=>{
+          this.setState((prevState)=>{
+              return {playlist:  Object.assign({},prevState.playlist,{
+                songs: [...prevState.playlist.songs,songAdded]
+              })}
+          })
+      })
+  }
+
+  allSongList(){
+    axios.get('/api/songs')
+    .then(res => res.data)
+    .then((songs) =>{
+      this.setState({songs})
+    })
+  }
+
 
   render(){
     return <div>
@@ -38,6 +62,7 @@ export default class Playlist extends React.Component {
       <Songs songs={this.state.playlist.songs} /> {/** Hooray for reusability! */}
       { this.state.playlist.songs && !this.state.playlist.songs.length && <small>No songs.</small> }
       <hr />
+      <AddSongContainer songs={this.state.songs} addSongToPlaylist={this.addSongToPlaylist}/>
     </div>
   }
 }
