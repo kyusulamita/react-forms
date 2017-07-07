@@ -10,15 +10,27 @@ export default class Playlist extends React.Component {
     }
   }
 
-  componentDidMount(){
-    const playlistId = this.props.match.params.playlistId
-
+  loadPlaylist(playlistId){
     axios.get(`/api/playlists/${playlistId}`)
       .then(res => res.data)
       .then(playlist => this.setState({
         playlist
       }))
   }
+
+  componentDidMount(){
+    const playlistId = this.props.match.params.playlistId
+    this.loadPlaylist(playlistId)
+  }
+
+  componentWillReceiveProps(nextProps){
+    const newPlayListId = nextProps.match.params.playlistId
+    const currentplaylistId = this.props.match.params.playlistId
+    if (newPlayListId !== currentplaylistId){
+      this.loadPlaylist(newPlayListId)
+    }
+  }
+
 
   render(){
     return <div>
