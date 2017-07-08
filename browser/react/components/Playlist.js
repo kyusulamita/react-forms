@@ -54,18 +54,20 @@ export default class Playlist extends React.Component {
   }
 
   removeSong(songId){
-    axios.delete(`/api/playlists/${this.state.playlist.id}/songs`,{id: songId})
-      .then((res)=>{
+    axios.delete(`/api/playlists/${this.state.playlist.id}/songs/${songId}`)
+      .then(()=>{
         this.setState((prevState)=>{
-          let newPlaylist = Object.assign({}, prevState.newPlaylist);
+          let newPlaylist = Object.assign({}, prevState.playlist);
           newPlaylist.songs = newPlaylist.songs.filter(song => song.id !== songId)
-          return {playlist : newPlaylist}
+          return {playlist : newPlaylist, error:false}
         })
       })
       .catch(error => {
         this.setState({error: true})
       })
   }
+
+
   allSongList(){
     axios.get('/api/songs')
     .then(res => res.data)

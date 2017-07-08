@@ -30,10 +30,10 @@ const Songs = (props) => {
                 <span>{ song.artists ? song.artists.map(artist => artist.name).join(', ') : null }</span>
               </td>
               <td>{ song.genre }</td>
-              { removeSong && <td><button onClick={()=>alert('Why do you want to get rid of me?')} className="btn btn-default btn-xs">
+              { removeSong && <td><button onClick={() => removeSong(song.id)} className="btn btn-default btn-xs">
                 <span className="glyphicon glyphicon-remove"></span>
               </button></td>
-                }
+              }
             </tr>
           ))
         }

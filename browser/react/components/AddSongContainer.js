@@ -5,7 +5,7 @@ export default class AddSongContainer extends React.Component {
   constructor(){
     super()
     this.state = {
-      songId: ''
+      songId: 1
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -16,13 +16,14 @@ export default class AddSongContainer extends React.Component {
 		})
 
 	}
-
 	handleSubmit(event){
 		event.preventDefault()
 		this.props.addSongToPlaylist(this.state.songId)
 	}
 
-
+  componentDidMount(){
+    this.setState({songId : this.props.songs[0]})
+  }
   render(){
     return (
       <div>
